@@ -1,3 +1,19 @@
+@php
+    $response = Http::get("https://api.paystack.co/bank");
+    $banks = [];
+
+    if ($response->ok()) {
+
+        if ($response->json()["status"]) {
+            collect($response->json()["data"])
+            ->each(function ($item) use (&$banks) {
+                $banks[(string)$item['code']] = collect($item)->only(["name", "code", "active"])->toArray();
+            });
+        }
+
+    }
+@endphp
+
 <div class="nk-content nk-content-fluid">
     <div class="container-xl wide-xl">
         <div class="nk-content-inner">
@@ -12,12 +28,18 @@
                         </div><!-- .nk-block-head-content -->
                         <div class="nk-block-head-content">
                             <div class="toggle-wrap nk-block-tools-toggle">
-                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em
+                                        class="icon ni ni-more-v"></em></a>
                                 <div class="toggle-expand-content" data-content="pageMenu">
                                     <ul class="nk-block-tools g-3">
                                         <li>
                                             <div class="drodown">
-                                                <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-toggle="dropdown"><em class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span class="d-none d-md-inline">Last</span> 30 Days</span><em class="dd-indc icon ni ni-chevron-right"></em></a>
+                                                <a href="#"
+                                                   class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                                   data-toggle="dropdown"><em
+                                                        class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                            class="d-none d-md-inline">Last</span> 30 Days</span><em
+                                                        class="dd-indc icon ni ni-chevron-right"></em></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <ul class="link-list-opt no-bdr">
                                                         <li><a href="#"><span>Last 30 Days</span></a></li>
@@ -47,10 +69,12 @@
                                                     <p>Total User on Senior Citizen Web Based Profiling System</p>
                                                 </div>
                                                 <div class="card-tools">
-                                                    <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Revenue from subscription"></em>
+                                                    <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip"
+                                                        data-placement="left" title="Revenue from subscription"></em>
                                                 </div>
                                             </div>
-                                            <div class="align-end gy-3 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
+                                            <div
+                                                class="align-end gy-3 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
                                                 <div class="nk-sale-data-group flex-md-nowrap g-4">
                                                     <div class="nk-sale-data">
                                                         <span class="amount">{{$userCount}}</span>
@@ -69,10 +93,12 @@
                                                     <p>The Super Admin </p>
                                                 </div>
                                                 <div class="card-tools">
-                                                    <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Revenue from subscription"></em>
+                                                    <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip"
+                                                        data-placement="left" title="Revenue from subscription"></em>
                                                 </div>
                                             </div>
-                                            <div class="align-end gy-3 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
+                                            <div
+                                                class="align-end gy-3 gx-5 flex-wrap flex-md-nowrap flex-lg-wrap flex-xxl-nowrap">
                                                 <div class="nk-sale-data-group flex-md-nowrap g-4">
                                                     <div class="nk-sale-data">
                                                         <span class="amount">{{$superadminCount}}</span>
@@ -95,7 +121,9 @@
                                                             <h6 class="title">Total Senior Citizen</h6>
                                                         </div>
                                                         <div class="card-tools">
-                                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total active subscription"></em>
+                                                            <em class="card-hint icon ni ni-help-fill"
+                                                                data-toggle="tooltip" data-placement="left"
+                                                                title="Total active subscription"></em>
                                                         </div>
                                                     </div>
                                                     <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
@@ -115,7 +143,9 @@
                                                             <h6 class="title">Total Hospitals</h6>
                                                         </div>
                                                         <div class="card-tools">
-                                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Daily Avg. subscription"></em>
+                                                            <em class="card-hint icon ni ni-help-fill"
+                                                                data-toggle="tooltip" data-placement="left"
+                                                                title="Daily Avg. subscription"></em>
                                                         </div>
                                                     </div>
                                                     <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
@@ -150,6 +180,9 @@
                                             <div class="nk-tb-col tb-col-sm"><span>Name</span></div>
                                             <div class="nk-tb-col tb-col-md"><span>Email</span></div>
                                             <div class="nk-tb-col"><span class="d-none d-sm-inline">Role</span></div>
+                                            <div class="nk-tb-col tb-col-sm"><span>Bank Account Number</span></div>
+                                            <div class="nk-tb-col tb-col-sm"><span>Bank Name</span></div>
+                                            <div class="nk-tb-col tb-col-sm"><span>Bank Account Name</span></div>
                                             <div class="nk-tb-col tb-col-lg"><span>Created At</span></div>
 
                                         </div>
@@ -172,20 +205,36 @@
                                                     <span class="tb-sub">{{$seniorcitizens->email}}</span>
                                                 </div>
                                                 <?php
-                                                $role=$seniorcitizens->roles->pluck('name')->first();
+                                                $role = $seniorcitizens->roles->pluck('name')->first();
 
                                                 ?>
                                                 <div class="nk-tb-col tb-col-lg">
                                                     <span class="tb-sub text-primary">{{$role}}</span>
                                                 </div>
+
+                                                <div class="nk-tb-col tb-col-sm">
+                                                    <span
+                                                        class="tb-sub">{{$seniorcitizens->profile->account_number ?? 'Not Updated'}}</span>
+                                                </div>
+
+                                                <div class="nk-tb-col tb-col-sm">
+                                                    <span
+                                                        class="tb-sub">{{$banks[$seniorcitizens->profile->account_info['bank_code']]['name'] ?? 'Not Updated'}}</span>
+                                                </div>
+
+                                                <div class="nk-tb-col tb-col-sm">
+                                                        <span
+                                                            class="tb-sub">{{$seniorcitizens->profile->account_info['first_name'] ?? 'Not Updated'}} {{$seniorcitizens->profile->account_info['last_name'] ?? 'Not Updated'}}</span>
+                                                </div>
+
                                                 <div class="nk-tb-col">
-                                                    <span class="tb-sub tb-amount"><span>{{db_to_human_time($seniorcitizens->created_at)}}</span></span>
+                                                    <span
+                                                        class="tb-sub tb-amount"><span>{{db_to_human_time($seniorcitizens->created_at)}}</span></span>
                                                 </div>
 
                                             </div>
 
                                         @endforeach
-
 
 
                                     </div>
