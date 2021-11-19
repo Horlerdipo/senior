@@ -45,6 +45,10 @@ class User extends Authenticatable
         return $this->hasOne(HospitalInformation::class);
     }
 
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
     public function stash()
     {
         return $this->hasOne('App\Models\Stash');

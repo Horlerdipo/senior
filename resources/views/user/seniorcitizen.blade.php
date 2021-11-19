@@ -1,5 +1,22 @@
 <!-- content @s -->
 @extends("layouts.dashboard")
+
+@php
+    $response = Http::get("https://api.paystack.co/bank");
+    $banks = [];
+
+    if ($response->ok()) {
+
+        if ($response->json()["status"]) {
+            collect($response->json()["data"])
+            ->each(function ($item) use (&$banks) {
+                $banks[(string)$item['code']] = collect($item)->only(["name", "code", "active"])->toArray();
+            });
+        }
+
+    }
+@endphp
+
 @section("content")
     <!-- content @s -->
     <div class="nk-content nk-content-fluid">
@@ -11,20 +28,25 @@
                             <div class="nk-block-head-content">
                                 <h3 class="nk-block-title page-title">Senior Citizen Account Creation Dashboard</h3>
                                 <div class="nk-block-des text-soft">
-                                    <p>Welcome  {{\Illuminate\Support\Facades\Auth::user()->name }}</p>
+                                    <p>Welcome {{\Illuminate\Support\Facades\Auth::user()->name }}</p>
                                 </div>
                             </div><!-- .nk-block-head-content -->
                             <div class="nk-block-head-content">
                                 <div class="toggle-wrap nk-block-tools-toggle">
-                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                                    <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1"
+                                       data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
                                     <div class="toggle-expand-content" data-content="pageMenu">
                                         <ul class="nk-block-tools g-3">
-                                            <li><a href="#" class="btn btn-white btn-dim btn-outline-primary"><em class="icon ni ni-download-cloud"></em><span>Export</span></a></li>
-                                            <li><a href="#" class="btn btn-white btn-dim btn-outline-primary"><em class="icon ni ni-reports"></em><span>Reports</span></a></li>
+                                            <li><a href="#" class="btn btn-white btn-dim btn-outline-primary"><em
+                                                        class="icon ni ni-download-cloud"></em><span>Export</span></a>
+                                            </li>
+                                            <li><a href="#" class="btn btn-white btn-dim btn-outline-primary"><em
+                                                        class="icon ni ni-reports"></em><span>Reports</span></a></li>
                                             <li class="nk-block-tools-opt">
                                                 <div class="drodown">
-                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-primary" data-toggle="modal" data-target="#addAdmin"><em class="icon ni ni-plus"></em></a>
-
+                                                    <a href="#" class="dropdown-toggle btn btn-icon btn-primary"
+                                                       data-toggle="modal" data-target="#addAdmin"><em
+                                                            class="icon ni ni-plus"></em></a>
                                                 </div>
                                             </li>
                                         </ul>
@@ -33,7 +55,6 @@
                             </div><!-- .nk-block-head-content -->
                         </div><!-- .nk-block-between -->
                     </div><!-- .nk-block-head -->
-
 
 
                     @if (session('status'))
@@ -58,6 +79,9 @@
                                                 <div class="nk-tb-col nk-tb-orders-type"><span>S/N</span></div>
                                                 <div class="nk-tb-col"><span>Name</span></div>
                                                 <div class="nk-tb-col tb-col-sm"><span>Email</span></div>
+                                                <div class="nk-tb-col tb-col-sm"><span>Bank Account Number</span></div>
+                                                <div class="nk-tb-col tb-col-sm"><span>Bank Name</span></div>
+                                                <div class="nk-tb-col tb-col-sm"><span>Bank Account Name</span></div>
                                                 <div class="nk-tb-col tb-col-xl"><span>Created At</span></div>
                                                 <div class="nk-tb-col tb-col-xl"><span>Delete</span></div>
 
@@ -74,12 +98,27 @@
                                                         <span class="tb-sub">{{$seniorcitizens->email}}</span>
                                                     </div>
 
-                                                    <div class="nk-tb-col tb-col-xl">
-                                                        <span class="tb-sub">{{db_to_human_time($seniorcitizens->created_at)}}</span>
+                                                    <div class="nk-tb-col tb-col-sm">
+                                                        <span class="tb-sub">{{$seniorcitizens->profile->account_number ?? 'Not Updated'}}</span>
+                                                    </div>
+
+                                                    <div class="nk-tb-col tb-col-sm">
+                                                        <span class="tb-sub">{{$banks[$seniorcitizens->profile->account_info['bank_code']]['name'] ?? 'Not Updated'}}</span>
+                                                    </div>
+
+                                                    <div class="nk-tb-col tb-col-sm">
+                                                        <span
+                                                            class="tb-sub">{{$seniorcitizens->profile->account_info['first_name'] ?? 'Not Updated'}} {{$seniorcitizens->profile->account_info['last_name'] ?? 'Not Updated'}}</span>
                                                     </div>
 
                                                     <div class="nk-tb-col tb-col-xl">
-                                                        <a href="{{route("seniorcitizen.delete",$seniorcitizens->id)}}"><span class="tb-sub">Delete</span></a>
+                                                        <span
+                                                            class="tb-sub">{{db_to_human_time($seniorcitizens->created_at)}}</span>
+                                                    </div>
+
+                                                    <div class="nk-tb-col tb-col-xl">
+                                                        <a href="{{route("seniorcitizen.delete",$seniorcitizens->id)}}"><span
+                                                                class="tb-sub">Delete</span></a>
                                                     </div>
 
                                                 </div><!-- .nk-tb-item -->
@@ -110,24 +149,27 @@
                     </a>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('create.seniorcitizen')}}" method="POST" class="form-validate form is-alter" id="form">
+                    <form action="{{route('create.seniorcitizen')}}" method="POST" class="form-validate form is-alter"
+                          id="form">
                         <div class="form-group">
                             <label class="form-label" for="name">Senior Citizen Name</label>
                             <div class="form-control-wrap">
-                                <input type="text" class="form-control"  required name="name" placeholder="Name">
+                                <input type="text" class="form-control" required name="name" placeholder="Name">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="email">Senior Citizen Email</label>
                             <div class="form-control-wrap">
-                                <input type="text" class="form-control form-validate"  required name="email" placeholder="Email">
+                                <input type="text" class="form-control form-validate" required name="email"
+                                       placeholder="Email">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="password">Senior Citizen Password</label>
                             <div class="form-control-wrap">
-                                <input type="password" class="form-control"  required name="password" placeholder="Password">
+                                <input type="password" class="form-control" required name="password"
+                                       placeholder="Password">
                             </div>
                         </div>
                         @csrf
