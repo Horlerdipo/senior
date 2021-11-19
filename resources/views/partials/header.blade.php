@@ -75,7 +75,7 @@
                     </li><!-- .nk-menu-item -->
 
                     <li class="nk-menu-item ">
-                        <a href="{{route('show.seniorcitizenprofile')}}" class="nk-menu-link ">
+                        <a href="{{url('user/senior_citizen')}}" class="nk-menu-link ">
                             <span class="nk-menu-text">Senior Citizen Profile</span>
                         </a>
 
@@ -111,7 +111,7 @@
 
                     @role('hospital')
                     <li class="nk-menu-item">
-                        <a href="{{route('show.seniorcitizenprofilehospital')}}" class="nk-menu-link ">
+                        <a href="{{route('seniorcitizenprofilehospital')}}" class="nk-menu-link ">
                             <span class="nk-menu-text">View Medical Record Of Senior Citizen</span>
                         </a>
                     </li><!-- .nk-menu-item -->

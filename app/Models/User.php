@@ -40,9 +40,9 @@ class User extends Authenticatable
         'account_info' => 'array',
     ];
 
-    public function profile()
+    public function hospital()
     {
-        return $this->hasOne('App\Models\Profile');
+        return $this->hasOne(HospitalInformation::class);
     }
 
     public function stash()

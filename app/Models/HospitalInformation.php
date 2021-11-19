@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class HospitalInformation extends Model
 {
     use HasFactory;
+
+    protected $guarded=[
+
+    ];
+
+
+    public function hospital(){
+        $this->belongsTo(User::class);
+    }
 }

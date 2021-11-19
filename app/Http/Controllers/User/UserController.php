@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CoordinatorRequest;
 use App\Http\Requests\StudentRequest;
 use App\Http\Requests\SupervisorRequest;
+use App\Models\HospitalInformation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -158,6 +160,37 @@ class UserController extends Controller
 
 
 
+    public function addHospitalinformation(Request $request){
+
+        $request->validate([
+            "opening_time"=>"required",
+            "closing_time"=>"required",
+            "information"=>"required",
+            "file"=>"required|file"
+        ]);
+
+
+        $uploadedFile = $request->file('file');
+        $filename = time().$uploadedFile->getClientOriginalName();
+
+        Storage::disk('local')->putFileAs(
+            'public/hospitals/',
+            $uploadedFile,
+            $filename
+        );
+
+        $columns=$request->only(['opening_time','closing_time','information',]);
+        $columns['file']='hospitals/'.$filename;
+        $columns['user_id']=auth()->user()->id;
+
+        if(HospitalInformation::where('user_id',auth()->user()->id)->exists()){
+            $hospitalInfo=HospitalInformation::where('user_id',auth()->user()->id)->first();
+            $hospitalInfo->update($columns);
+        }else{
+            HospitalInformation::create($columns);
+        }
+        return back()->with('status','Hospital Information Added');
+    }
 }
 
 

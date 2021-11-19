@@ -12,12 +12,18 @@
                         </div><!-- .nk-block-head-content -->
                         <div class="nk-block-head-content">
                             <div class="toggle-wrap nk-block-tools-toggle">
-                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em class="icon ni ni-more-v"></em></a>
+                                <a href="#" class="btn btn-icon btn-trigger toggle-expand mr-n1" data-target="pageMenu"><em
+                                        class="icon ni ni-more-v"></em></a>
                                 <div class="toggle-expand-content" data-content="pageMenu">
                                     <ul class="nk-block-tools g-3">
                                         <li>
                                             <div class="drodown">
-                                                <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light" data-toggle="modal" data-target="#addAdmin"><em class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span class="d-none d-md-inline">Upload Hospital Information</span> </span><em class="dd-indc icon ni ni-chevron-right"></em></a>
+                                                <a href="#"
+                                                   class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                                   data-toggle="modal" data-target="#addAdmin"><em
+                                                        class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                            class="d-none d-md-inline">Upload Hospital Information</span> </span><em
+                                                        class="dd-indc icon ni ni-chevron-right"></em></a>
 
                                             </div>
                                         </li>
@@ -28,6 +34,19 @@
                         </div><!-- .nk-block-head-content -->
                     </div><!-- .nk-block-between -->
                 </div><!-- .nk-block-head -->
+
+                @if (session('status'))
+                    <div class="alert alert-success">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                @if (session('danger'))
+                    <div class="alert alert-danger">
+                        {{ session('danger') }}
+                    </div>
+                @endif
+
                 <div class="nk-block">
                     <div class="row g-gs">
                         <div class="col-xxl-6">
@@ -43,7 +62,9 @@
                                                             <h6 class="title">Total Senior Citizen</h6>
                                                         </div>
                                                         <div class="card-tools">
-                                                            <em class="card-hint icon ni ni-help-fill" data-toggle="tooltip" data-placement="left" title="Total active subscription"></em>
+                                                            <em class="card-hint icon ni ni-help-fill"
+                                                                data-toggle="tooltip" data-placement="left"
+                                                                title="Total active subscription"></em>
                                                         </div>
                                                     </div>
                                                     <div class="align-end flex-sm-wrap g-4 flex-md-nowrap">
@@ -54,9 +75,6 @@
                                                 </div>
                                             </div><!-- .card -->
                                         </div><!-- .col -->
-
-
-
 
 
                                     </div><!-- .row -->
@@ -102,20 +120,20 @@
                                                     <span class="tb-sub">{{$seniorcitizens->email}}</span>
                                                 </div>
                                                 <?php
-                                                $role=$seniorcitizens->roles->pluck('name')->first();
+                                                $role = $seniorcitizens->roles->pluck('name')->first();
 
                                                 ?>
                                                 <div class="nk-tb-col tb-col-lg">
                                                     <span class="tb-sub text-primary">{{$role}}</span>
                                                 </div>
                                                 <div class="nk-tb-col">
-                                                    <span class="tb-sub tb-amount"><span>{{db_to_human_time($seniorcitizens->created_at)}}</span></span>
+                                                    <span
+                                                        class="tb-sub tb-amount"><span>{{db_to_human_time($seniorcitizens->created_at)}}</span></span>
                                                 </div>
 
                                             </div>
 
                                         @endforeach
-
 
 
                                     </div>
@@ -136,8 +154,6 @@
 <!-- content @e -->
 
 
-
-
 <!-- Modal Form -->
 <div class="modal fade" tabindex="-1" id="addAdmin">
     <div class="modal-dialog" role="document">
@@ -149,24 +165,28 @@
                 </a>
             </div>
             <div class="modal-body">
-                <form action="{{route('create.user')}}" method="POST" class="form-validate form is-alter" id="form">
+                <form action="{{route('hospital.profile')}}" method="POST" enctype="multipart/form-data"
+                      class="form-validate form is-alter" id="form">
                     <div class="form-group">
                         <label class="form-label" for="name">Opening Time</label>
                         <div class="form-control-wrap">
-                            <input type="text" class="form-control"  required name="name" placeholder="Name">
+                            <input type="time" class="form-control" value="{{auth()->user()->hospital->opening_time}}"
+                                   required name="opening_time" placeholder="Opening Time">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="email">Closing Time</label>
                         <div class="form-control-wrap">
-                            <input type="text" class="form-control form-validate"  required name="email" placeholder="Email">
+                            <input type="time" class="form-control form-validate"
+                                   value="{{auth()->user()->hospital->closing_time}}" required name="closing_time"
+                                   placeholder="Closing Time">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="password">Information About The Hospitals</label>
                         <div class="form-control-wrap">
-                            <input type="password" class="form-control"  required name="password" placeholder="Password">
+                            <textarea class="form-control" name="information" id="" cols="30" rows="10">{{auth()->user()->hospital->information}}</textarea>
                         </div>
                     </div>
 

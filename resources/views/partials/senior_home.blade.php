@@ -53,7 +53,10 @@
                                             <div class="nk-tb-col"><span>S/N</span></div>
                                             <div class="nk-tb-col tb-col-sm"><span>Hospital Name</span></div>
                                             <div class="nk-tb-col tb-col-md"><span>Hospital Email Address</span></div>
-                                            <div class="nk-tb-col"><span class="d-none d-sm-inline">Profile</span></div>
+                                            <div class="nk-tb-col tb-col-md"><span>Opening Hours</span></div>
+                                            <div class="nk-tb-col tb-col-md"><span>Closing Hours</span></div>
+                                            <div class="nk-tb-col tb-col-md"><span>Hospital Informations</span></div>
+                                            <div class="nk-tb-col"><span class="d-none d-sm-inline">Hospital File</span></div>
                                             <div class="nk-tb-col tb-col-lg"><span>Created At</span></div>
 
                                         </div>
@@ -75,9 +78,26 @@
                                                 <div class="nk-tb-col tb-col-md">
                                                     <span class="tb-sub">{{$hospitals->email}}</span>
                                                 </div>
+
                                                 <div class="nk-tb-col tb-col-md">
-                                                    <a href="" ><span class="tb-sub">View Hospital Profile</span></a>
+                                                    <span class="tb-sub">{{$hospitals->hospital->opening_time ?? 'Not Uploaded'}}</span>
                                                 </div>
+
+                                                <div class="nk-tb-col tb-col-md">
+                                                    <span class="tb-sub">{{$hospitals->hospital->closing_time ?? 'Not Uploaded'}}</span>
+                                                </div>
+
+                                                <div class="nk-tb-col tb-col-md">
+                                                    <span class="tb-sub">{{$hospitals->hospital->information ?? 'Not Uploaded'}}</span>
+                                                </div>
+
+                                                <div class="nk-tb-col tb-col-sm">
+                                                    <span class="tb-sub"><a href="{{\Illuminate\Support\Facades\Storage::url($hospitals->hospital->file) ?? '#'}}">View File</a></span>
+                                                </div>
+
+{{--                                                <div class="nk-tb-col tb-col-md">--}}
+{{--                                                    <a href="" ><span class="tb-sub">View Hospital Profile</span></a>--}}
+{{--                                                </div>--}}
 
                                                 <div class="nk-tb-col">
                                                     <span class="tb-sub tb-amount"><span>{{db_to_human_time($hospitals->created_at)}}</span></span>

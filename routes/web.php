@@ -56,7 +56,7 @@ Route::group([
 
 
     //Senior Citizen Profile
-    Route::get('senior_citizen', 'ProfileController@showSeniorCitizenProfile')->name('show.seniorcitizenprofile');
+    Route::get('senior_citizen', 'ProfileController@showSeniorCitizenProfile')->name('seniorcitizenprofile');
 
 
 
@@ -88,12 +88,12 @@ Route::group([
 
 
 
-    Route::post('/hospitals/create_profile', 'ProfileController@updateProfile')->name('create_profile');
+    Route::post('/hospitals/create_profile', 'UserController@addHospitalinformation')->name('hospital.profile');
 
 
     //Getting Information Of Senior Citizen
 
-    Route::get('/senior_citizen', 'ProfileController@showSeniorCitizenProfileHopitals')->name('show.seniorcitizenprofilehospital');
+    Route::get('/senior_citizen_hospital', 'ProfileController@showSeniorCitizenProfileHopitals')->name('seniorcitizenprofilehospital');
 
 
 

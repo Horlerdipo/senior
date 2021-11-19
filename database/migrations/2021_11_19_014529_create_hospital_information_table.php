@@ -15,6 +15,11 @@ class CreateHospitalInformationTable extends Migration
     {
         Schema::create('hospital_information', function (Blueprint $table) {
             $table->id();
+            $table->time("opening_time");
+            $table->time("closing_time");
+            $table->text("information");
+            $table->string("file");
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
